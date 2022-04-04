@@ -1,0 +1,2 @@
+# vmessconfig
+通过vmess链接和你的模板自动生成v2ray配置文件
