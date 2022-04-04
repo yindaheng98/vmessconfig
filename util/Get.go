@@ -5,8 +5,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
-
-	"iochen.com/v2gen/v2/common/base64"
 )
 
 func splitVmess(s string) []string {
@@ -35,7 +33,7 @@ func GetVmessList(url string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	strVmess, err := base64.Decode(string(base64Vmess)) //解码base64Vmess为strVmess
+	strVmess, err := Base64VmessDecode(string(base64Vmess)) //解码base64Vmess为strVmess
 	if err != nil {
 		return nil, err
 	}
