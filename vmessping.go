@@ -17,6 +17,7 @@ type PingConfig struct {
 	Verbose       bool   `json:"verbose"`
 	UseMux        bool   `json:"useMux"`
 	AllowInsecure bool   `json:"allowInsecure"`
+	Threads       int    `json:"threads"`
 }
 
 func VmessPingOne(vmessstr string, pingconfig *PingConfig, stopCh <-chan os.Signal) (*vmessping.PingStat, error) {
@@ -39,9 +40,9 @@ func VmessPingOne(vmessstr string, pingconfig *PingConfig, stopCh <-chan os.Sign
 	return pingstat, nil
 }
 
-func VmessPingAll(vmesslist []string, pingconfig *PingConfig, threads int, stopCh <-chan os.Signal) map[string]*vmessping.PingStat {
+func VmessPingAll(vmesslist []string, pingconfig *PingConfig, stopCh <-chan os.Signal) map[string]*vmessping.PingStat {
 	vmessstats := make(map[string]*vmessping.PingStat)
-	wg := sizedwaitgroup.New(threads)
+	wg := sizedwaitgroup.New(pingconfig.Threads)
 	for _, vmessstr := range vmesslist {
 		wg.Add()
 		go func(vmessstr string) {
