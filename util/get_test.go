@@ -17,7 +17,7 @@ func TestGetVmessList(t *testing.T) {
 	}
 	vcl := VmessListParse(vl, false, false)
 	for vm, vc := range vcl {
-		fmt.Println(vm)
+		fmt.Printf("%d ", vm)
 		j, err := json.Marshal(vc)
 		if err != nil {
 			t.Error(err)

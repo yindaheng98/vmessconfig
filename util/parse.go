@@ -19,15 +19,15 @@ func VmessParse(vms string, useMux, allowInsecure bool) (*conf.OutboundDetourCon
 	return outbound, nil
 }
 
-func VmessListParse(vmesslist []string, useMux, allowInsecure bool) map[string]*conf.OutboundDetourConfig {
-	outbounds := make(map[string]*conf.OutboundDetourConfig)
+func VmessListParse(vmesslist []string, useMux, allowInsecure bool) []*conf.OutboundDetourConfig {
+	var outbounds []*conf.OutboundDetourConfig
 	for _, vms := range vmesslist {
 		outbound, err := VmessParse(vms, useMux, allowInsecure)
 		if err != nil {
-			fmt.Println(err)
+			fmt.Printf("Cannot parse :%s\n%+v\n", vms, err)
 			continue
 		}
-		outbounds[vms] = outbound
+		outbounds = append(outbounds, outbound)
 	}
 	return outbounds
 }
