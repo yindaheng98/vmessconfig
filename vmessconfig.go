@@ -1,42 +1,55 @@
 package vmessconfig
 
 import (
-	core "github.com/v2fly/v2ray-core/v4"
+	"github.com/remeh/sizedwaitgroup"
+	"github.com/v2fly/v2ray-core/v4/infra/conf"
 	"github.com/v2fly/vmessping"
-	"github.com/v2fly/vmessping/miniv2ray"
-	"github.com/v2fly/vmessping/vmess"
-	"github.com/yindaheng98/vmessconfig/util"
+	"os"
 )
 
-type Outbound struct {
-	config *core.OutboundHandlerConfig
-	stats  *vmessping.PingStat
+type PingConfig struct {
+	dest                                     string
+	count, timeoutsec, inteval, quit         uint
+	showNode, verbose, useMux, allowInsecure bool
 }
 
-func VmessOutboundConfig(url string, template *core.OutboundHandlerConfig, useMux, allowInsecure bool) ([]*Outbound, error) {
-	vl, err := util.GetVmessList(url)
+func VmessPingOne(vmessstr string, pingconfig *PingConfig, stopCh <-chan os.Signal) (*vmessping.PingStat, error) {
+	pingstat, err := vmessping.Ping(
+		vmessstr,
+		pingconfig.count,
+		pingconfig.dest,
+		pingconfig.timeoutsec,
+		pingconfig.inteval,
+		pingconfig.quit,
+		stopCh,
+		pingconfig.showNode,
+		pingconfig.verbose,
+		pingconfig.useMux,
+		pingconfig.allowInsecure,
+	)
 	if err != nil {
 		return nil, err
 	}
-	outbounds := make([]*Outbound, len(vl))
-	for i := 0; i < len(vl); i++ {
-		vmess, err := vmess.ParseVmess(vl[i])
-		if err != nil {
-			return nil, err
-		}
-		pingstats, err := vmessping.Ping(vl[i])
-		if err != nil {
-			return nil, err
-		}
-		o, err := miniv2ray.Vmess2Outbound(vmess, useMux, allowInsecure)
-		if err != nil {
-			return nil, err
-		}
-		config, err := util.ConfigMerge(o, template)
-		if err != nil {
-			return nil, err
-		}
-		outbounds[i] = &Outbound{config, pingstats}
+	return pingstat, nil
+}
+
+type Outbound struct {
+	config *conf.OutboundDetourConfig
+	stats  *vmessping.PingStat
+}
+
+func VmessPingAll(vmesslist []string, pingconfig *PingConfig, threads int, stopCh <-chan os.Signal) map[string]*vmessping.PingStat {
+	vmessstats := make(map[string]*vmessping.PingStat)
+	wg := sizedwaitgroup.New(threads)
+	for _, vmessstr := range vmesslist {
+		wg.Add()
+		go func(vmessstr string) {
+			pingstat, err := VmessPingOne(vmessstr, pingconfig, stopCh)
+			if err == nil {
+				vmessstats[vmessstr] = pingstat
+			}
+			wg.Done()
+		}(vmessstr)
 	}
-	return outbounds, nil
+	return vmessstats
 }
