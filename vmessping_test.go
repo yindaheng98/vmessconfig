@@ -13,12 +13,13 @@ func TestVmessPingAll(t *testing.T) {
 		t.Error(err)
 	}
 	vmessstats := VmessPingAll(vmesslist, &PingConfig{
-		dest:  "http://www.google.com/gen_204",
-		count: 8, timeoutsec: 4, inteval: 1, quit: 0,
-		showNode: true, verbose: false, useMux: false, allowInsecure: false,
+		Dest:  "http://www.google.com/gen_204",
+		Count: 4, Timeoutsec: 8, Inteval: 1, Quit: 0,
+		ShowNode: true, Verbose: false, UseMux: false, AllowInsecure: false,
 	}, 16, make(chan os.Signal))
-	for vmessstr, vmessstat := range vmessstats {
+	vmesss := util.VmessSort(vmessstats)
+	for _, vmessstr := range vmesss {
 		fmt.Println(vmessstr)
-		fmt.Printf("%+v\n", vmessstat)
+		fmt.Printf("%+v\n", vmessstats[vmessstr])
 	}
 }
