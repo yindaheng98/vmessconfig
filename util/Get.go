@@ -23,6 +23,7 @@ func splitVmess(s string) []string {
 	})
 }
 
+// GetVmessList 从某个URL中读取Vmess列表
 func GetVmessList(url string) ([]string, error) {
 	resp, err := http.Get(url) //请求base64Vmess
 	defer func(Body io.ReadCloser) { _ = Body.Close() }(resp.Body)
@@ -33,7 +34,7 @@ func GetVmessList(url string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	strVmess, err := Base64VmessDecode(string(base64Vmess)) //解码base64Vmess为strVmess
+	strVmess, err := Base64VmessListDecode(string(base64Vmess)) //解码base64Vmess为strVmess
 	if err != nil {
 		return nil, err
 	}
