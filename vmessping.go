@@ -20,6 +20,15 @@ type PingConfig struct {
 	Threads       int    `json:"threads"`
 }
 
+func DefaultPingConfig() *PingConfig {
+	return &PingConfig{
+		Dest:  "http://www.google.com/gen_204",
+		Count: 4, Timeoutsec: 8, Inteval: 1, Quit: 0,
+		ShowNode: true, Verbose: false, UseMux: false, AllowInsecure: false,
+		Threads: 16,
+	}
+}
+
 func VmessPingOne(vmessstr string, pingconfig *PingConfig, stopCh <-chan os.Signal) (*vmessping.PingStat, error) {
 	pingstat, err := vmessping.Ping(
 		vmessstr,
