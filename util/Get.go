@@ -1,7 +1,6 @@
 package util
 
 import (
-	"io"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -26,7 +25,6 @@ func splitVmess(s string) []string {
 // GetVmessList 从某个URL中读取Vmess列表
 func GetVmessList(url string) ([]string, error) {
 	resp, err := http.Get(url) //请求base64Vmess
-	defer func(Body io.ReadCloser) { _ = Body.Close() }(resp.Body)
 	if err != nil {
 		return []string{}, err
 	}
