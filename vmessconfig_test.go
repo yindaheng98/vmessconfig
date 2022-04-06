@@ -9,7 +9,7 @@ import (
 )
 
 func printVmessConfig(t *testing.T, conf *conf.Config) {
-	j, err := json.Marshal(conf)
+	j, err := json.MarshalIndent(conf, "", " ")
 	if err != nil {
 		t.Error(err)
 		return

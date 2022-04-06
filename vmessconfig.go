@@ -28,7 +28,7 @@ type BalancerConfig struct {
 	OutboundInsertBeforeTag string `json:"outboundInsertBeforeTag"`
 	TagFormat               string `json:"tagFormat"`
 	BalancerInsertToTag     string `json:"balancerInsertToTag"`
-	MaxSelect               int    `json:"maxSelect"`
+	MaxSelect               uint   `json:"maxSelect"`
 }
 
 func DefaultBalancerConfig() *BalancerConfig {
@@ -56,7 +56,7 @@ func VmessConfigBalancer(url string, template *conf.Config, config *BalancerConf
 	if err != nil {
 		return nil, err
 	}
-	max := config.MaxSelect
+	max := int(config.MaxSelect)
 	if len(vmesslist) < max {
 		max = len(vmesslist)
 	}
