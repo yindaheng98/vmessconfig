@@ -8,6 +8,16 @@ import (
 	"testing"
 )
 
+func printVmessConfig(t *testing.T, conf *conf.Config) {
+	j, err := json.Marshal(conf)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	fmt.Println(string(j))
+
+}
+
 func TestVmessConfigBalancer(t *testing.T) {
 	template := &conf.Config{}
 	err := json.Unmarshal([]byte(DefaultBalancerTemplate), template)
@@ -21,12 +31,7 @@ func TestVmessConfigBalancer(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	j, err := json.Marshal(vconf)
-	if err != nil {
-		t.Error(err)
-		return
-	}
-	fmt.Println(string(j))
+	printVmessConfig(t, vconf)
 }
 
 func TestVmessConfigSingleNode(t *testing.T) {
@@ -42,10 +47,37 @@ func TestVmessConfigSingleNode(t *testing.T) {
 		t.Error(err)
 		return
 	}
-	j, err := json.Marshal(vconf)
+	printVmessConfig(t, vconf)
+}
+
+func TestVmessConfig(t *testing.T) {
+	template := &conf.Config{}
+	err := json.Unmarshal([]byte(DefaultBalancerTemplate), template)
 	if err != nil {
 		t.Error(err)
 		return
 	}
-	fmt.Println(string(j))
+	bconf := DefaultBalancerConfig()
+	bconf.PingConfig.Count = 1
+	vconf, err := VmessConfig("https://get.cloudv2.net/osubscribe.php?sid=128958&token=MDByRw64Cnex", template, bconf, make(<-chan os.Signal))
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	printVmessConfig(t, vconf)
+
+	template = &conf.Config{}
+	err = json.Unmarshal([]byte(DefaultSingleNodeTemplate), template)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	sconf := DefaultSingleNodeConfig()
+	sconf.PingConfig.Count = 1
+	vconf, err = VmessConfig("https://get.cloudv2.net/osubscribe.php?sid=128958&token=MDByRw64Cnex", template, sconf, make(<-chan os.Signal))
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	printVmessConfig(t, vconf)
 }
