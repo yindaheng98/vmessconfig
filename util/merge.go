@@ -8,7 +8,11 @@ import (
 func insertOutboundConfig(outboundDetourConfigs []conf.OutboundDetourConfig, template *conf.Config, insertBeforeTag string) *conf.Config {
 	for i, outbound := range template.OutboundConfigs {
 		if outbound.Tag == insertBeforeTag {
-			template.OutboundConfigs = append(append(template.OutboundConfigs[0:i], outboundDetourConfigs...), template.OutboundConfigs[i:]...)
+			out := make([]conf.OutboundDetourConfig, 0)
+			out = append(out, template.OutboundConfigs[:i]...)
+			out = append(out, outboundDetourConfigs...)
+			out = append(out, template.OutboundConfigs[i:]...)
+			template.OutboundConfigs = out
 			return template
 		}
 	}
