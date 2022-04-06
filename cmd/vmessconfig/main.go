@@ -45,12 +45,13 @@ func exit(err error) {
 func main() {
 	flag.Parse()
 
-	var mode, url string
+	var mode string
+	var urls []string
 	if flag.NArg() < 2 {
 		exit(nil)
 	}
 	mode = flag.Args()[0]
-	url = flag.Args()[1]
+	urls = flag.Args()[1:]
 
 	template := &conf.Config{}
 	if *tempath != "" {
@@ -115,7 +116,7 @@ func main() {
 	} else {
 		exit(nil)
 	}
-	result, err := vmessconfig.VmessConfig(url, template, config, osSignals)
+	result, err := vmessconfig.VmessConfig(urls, template, config, osSignals)
 	if err != nil {
 		exit(err)
 	}

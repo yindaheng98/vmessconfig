@@ -26,7 +26,10 @@ func TestVmessConfigBalancer(t *testing.T) {
 		return
 	}
 	bconf := DefaultBalancerConfig()
-	vconf, err := VmessConfigBalancer("https://get.cloudv2.net/osubscribe.php?sid=128958&token=MDByRw64Cnex", template, bconf, make(<-chan os.Signal))
+	vconf, err := VmessConfigBalancer([]string{
+		"https://get.cloudv2.net/osubscribe.php?sid=128958&token=MDByRw64Cnex",
+		"https://get.cloudv2.net/osubscribe.php?sid=128958&token=MDByRw64Cnex",
+	}, template, bconf, make(<-chan os.Signal))
 	if err != nil {
 		t.Error(err)
 		return
@@ -42,7 +45,10 @@ func TestVmessConfigSingleNode(t *testing.T) {
 		return
 	}
 	bconf := DefaultSingleNodeConfig()
-	vconf, err := VmessConfigSingleNode("https://get.cloudv2.net/osubscribe.php?sid=128958&token=MDByRw64Cnex", template, bconf, make(<-chan os.Signal))
+	vconf, err := VmessConfigSingleNode([]string{
+		"https://get.cloudv2.net/osubscribe.php?sid=128958&token=MDByRw64Cnex",
+		"https://get.cloudv2.net/osubscribe.php?sid=128958&token=MDByRw64Cnex",
+	}, template, bconf, make(<-chan os.Signal))
 	if err != nil {
 		t.Error(err)
 		return
@@ -59,7 +65,10 @@ func TestVmessConfig(t *testing.T) {
 	}
 	bconf := DefaultBalancerConfig()
 	bconf.PingConfig.Count = 1
-	vconf, err := VmessConfig("https://get.cloudv2.net/osubscribe.php?sid=128958&token=MDByRw64Cnex", template, bconf, make(<-chan os.Signal))
+	vconf, err := VmessConfig([]string{
+		"https://get.cloudv2.net/osubscribe.php?sid=128958&token=MDByRw64Cnex",
+		"https://get.cloudv2.net/osubscribe.php?sid=128958&token=MDByRw64Cnex",
+	}, template, bconf, make(<-chan os.Signal))
 	if err != nil {
 		t.Error(err)
 		return
@@ -74,7 +83,10 @@ func TestVmessConfig(t *testing.T) {
 	}
 	sconf := DefaultSingleNodeConfig()
 	sconf.PingConfig.Count = 1
-	vconf, err = VmessConfig("https://get.cloudv2.net/osubscribe.php?sid=128958&token=MDByRw64Cnex", template, sconf, make(<-chan os.Signal))
+	vconf, err = VmessConfig([]string{
+		"https://get.cloudv2.net/osubscribe.php?sid=128958&token=MDByRw64Cnex",
+		"https://get.cloudv2.net/osubscribe.php?sid=128958&token=MDByRw64Cnex",
+	}, template, sconf, make(<-chan os.Signal))
 	if err != nil {
 		t.Error(err)
 		return
