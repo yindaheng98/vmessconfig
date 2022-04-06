@@ -1,6 +1,6 @@
 package vmessconfig
 
-var defaultTemplate = `
+var DefaultBalancerTemplate = `
 {
   "log": {
     "loglevel": "warning"
@@ -19,6 +19,14 @@ var defaultTemplate = `
       },
       "settings": {
         "auth": "noauth",
+        "udp": true
+      }
+    },
+    {
+      "port": 80,
+      "listen": "0.0.0.0",
+      "protocol": "http",
+      "settings": {
         "udp": true
       }
     }
@@ -74,5 +82,47 @@ var defaultTemplate = `
       }
     ]
   }
+}
+`
+
+var DefaultSingleNodeTemplate = `
+{
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "tag": "proxy",
+      "port": 1080,
+      "listen": "0.0.0.0",
+      "protocol": "socks",
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls"
+        ]
+      },
+      "settings": {
+        "auth": "noauth",
+        "udp": true
+      }
+    },
+    {
+      "port": 80,
+      "listen": "0.0.0.0",
+      "protocol": "http",
+      "settings": {
+        "udp": true
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "vmessconfig-outbound-insert",
+      "protocol": "freedom",
+      "settings": {}
+    }
+  ]
 }
 `
