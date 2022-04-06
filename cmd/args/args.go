@@ -40,6 +40,22 @@ func (c TemplateConfig) Template() (*conf.Config, error) {
 	return template, nil
 }
 
+func (c TemplateConfig) Write(v2config *conf.Config) error {
+	j, err := json.MarshalIndent(v2config, "", " ")
+	if err != nil {
+		return err
+	}
+	if c.To != "" && c.To != "-" {
+		err := ioutil.WriteFile(c.To, j, 0777)
+		if err != nil {
+			return err
+		}
+	} else {
+		fmt.Println(string(j))
+	}
+	return nil
+}
+
 type CmdConfig struct {
 	vmessconfig.Config `flag:"-"`
 	TemplateConfig     *TemplateConfig

@@ -2,11 +2,9 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/yindaheng98/vmessconfig"
 	"github.com/yindaheng98/vmessconfig/cmd/args"
-	"io/ioutil"
 	"os"
 	"os/signal"
 	"syscall"
@@ -40,17 +38,12 @@ func main() {
 	ctx, _ := signal.NotifyContext(context.Background(), os.Interrupt, os.Kill, syscall.SIGTERM)
 
 	v2config, err := vmessconfig.VmessConfig(config.Urls, template, config.Config, ctx)
-
-	j, err := json.MarshalIndent(v2config, "", " ")
 	if err != nil {
 		exit(err)
 	}
-	if config.TemplateConfig.To != "" && config.TemplateConfig.To != "-" {
-		err := ioutil.WriteFile(config.TemplateConfig.To, j, 0777)
-		if err != nil {
-			exit(err)
-		}
-	} else {
-		fmt.Println(string(j))
+
+	err = config.TemplateConfig.Write(v2config)
+	if err != nil {
+		exit(err)
 	}
 }
