@@ -9,16 +9,16 @@ import (
 )
 
 type PingConfig struct {
-	Dest          string `json:"destination"`
-	Count         uint   `json:"count"`
-	Timeoutsec    uint   `json:"timeout"`
-	Inteval       uint   `json:"interval"`
-	Quit          uint   `json:"quit"`
-	ShowNode      bool   `json:"showNode"`
-	Verbose       bool   `json:"verbose"`
-	UseMux        bool   `json:"useMux"`
-	AllowInsecure bool   `json:"allowInsecure"`
-	Threads       uint   `json:"threads"`
+	Dest          string `json:"destination" desc:"the test destination url, need 204 for success return"`
+	Count         uint   `json:"count" desc:"Count. Stop after sending COUNT requests"`
+	Timeoutsec    uint   `json:"timeout" desc:"timeout seconds for each request"`
+	Inteval       uint   `json:"interval" desc:"inteval seconds between pings"`
+	Quit          uint   `json:"quit" desc:"fast quit on error counts"`
+	ShowNode      bool   `json:"showNode" desc:"show node location/outbound ip"`
+	Verbose       bool   `json:"verbose" desc:"verbose (debug log)"`
+	UseMux        bool   `json:"useMux" desc:"use mux outbound"`
+	AllowInsecure bool   `json:"allowInsecure" desc:"allow insecure TLS connections"`
+	Threads       uint   `json:"threads" desc:"How many pinging coroutines exists at the same time"`
 }
 
 func DefaultPingConfig() *PingConfig {

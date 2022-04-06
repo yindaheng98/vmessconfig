@@ -15,20 +15,20 @@ import (
 )
 
 type TemplateConfig struct {
-	From string
-	To   string
+	From string `desc:"Where the template file is"`
+	To   string `desc:"Where the v2ray json config file should write to"`
 }
 
 type BalancerCmdConfig struct {
 	*vmessconfig.BalancerConfig
 	TemplateConfig *TemplateConfig
-	Urls           []string
+	Urls           []string `desc:"List of your subscription urls"`
 }
 
 type SingleCmdConfig struct {
 	*vmessconfig.SingleNodeConfig
 	TemplateConfig *TemplateConfig
-	Urls           []string
+	Urls           []string `desc:"List of your subscription urls"`
 }
 
 var (

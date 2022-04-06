@@ -15,7 +15,7 @@ type BaseConfig struct {
 
 type SingleNodeConfig struct {
 	BaseConfig
-	OutboundInsertBeforeTag string `json:"outboundInsertBeforeTag"`
+	OutboundInsertBeforeTag string `json:"outboundInsertBeforeTag" desc:"Insert outbound before the exists outbound whose tag is this"`
 }
 
 func DefaultSingleNodeConfig() *SingleNodeConfig {
@@ -27,10 +27,10 @@ func DefaultSingleNodeConfig() *SingleNodeConfig {
 
 type BalancerConfig struct {
 	BaseConfig
-	OutboundInsertBeforeTag string `json:"outboundInsertBeforeTag"`
-	TagFormat               string `json:"tagFormat"`
-	BalancerInsertToTag     string `json:"balancerInsertToTag"`
-	MaxSelect               uint   `json:"maxSelect"`
+	OutboundInsertBeforeTag string `json:"outboundInsertBeforeTag" desc:"Insert outbound before the exists outbound whose tag is this"`
+	TagFormat               string `json:"tagFormat" desc:"Format of the auto-generated outbounds' tag"`
+	BalancerInsertToTag     string `json:"balancerInsertToTag" desc:"Insert the selector into the balancer whose tag is this"`
+	MaxSelect               uint   `json:"maxSelect" desc:"How many outbounds do you want to put into"`
 }
 
 func DefaultBalancerConfig() *BalancerConfig {
