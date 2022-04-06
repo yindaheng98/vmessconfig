@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -92,8 +93,8 @@ func main() {
 		Threads:       *threads,
 	}
 
-	osSignals := make(chan os.Signal, 1)
-	signal.Notify(osSignals, os.Interrupt, os.Kill, syscall.SIGTERM)
+	ctx := context.Background()
+	ctx, _ = signal.NotifyContext(ctx, os.Interrupt, os.Kill, syscall.SIGTERM)
 
 	var config interface{}
 	if mode == "single" {
@@ -116,7 +117,7 @@ func main() {
 	} else {
 		exit(nil)
 	}
-	result, err := vmessconfig.VmessConfig(urls, template, config, osSignals)
+	result, err := vmessconfig.VmessConfig(urls, template, config, ctx)
 	if err != nil {
 		exit(err)
 	}

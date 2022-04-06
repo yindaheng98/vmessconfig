@@ -1,10 +1,10 @@
 package vmessconfig
 
 import (
+	"context"
 	"fmt"
 	"github.com/v2fly/v2ray-core/v4/infra/conf"
 	"github.com/yindaheng98/vmessconfig/util"
-	"os"
 )
 
 type BaseConfig struct {
@@ -41,7 +41,7 @@ func DefaultBalancerConfig() *BalancerConfig {
 	}
 }
 
-func getSortedVmessList(urls []string, config *PingConfig, stopCh <-chan os.Signal) ([]string, error) {
+func getSortedVmessList(urls []string, config *PingConfig, ctx context.Context) ([]string, error) {
 	vmesslists := make([]string, 0)
 	for _, url := range urls {
 		vmesslist, err := util.GetVmessList(url)
@@ -50,13 +50,16 @@ func getSortedVmessList(urls []string, config *PingConfig, stopCh <-chan os.Sign
 		}
 		vmesslists = append(vmesslists, vmesslist...)
 	}
-	vmessstats := VmessPingAll(vmesslists, config, stopCh)
+	vmessstats := VmessPingAll(vmesslists, config, ctx)
 	vmesslists = util.VmessSort(vmessstats)
+	if len(vmesslists) <= 0 {
+		return []string{}, fmt.Errorf("no valid vmess")
+	}
 	return vmesslists, nil
 }
 
-func VmessConfigBalancer(urls []string, template *conf.Config, config *BalancerConfig, stopCh <-chan os.Signal) (*conf.Config, error) {
-	vmesslist, err := getSortedVmessList(urls, config.PingConfig, stopCh)
+func VmessConfigBalancer(urls []string, template *conf.Config, config *BalancerConfig, ctx context.Context) (*conf.Config, error) {
+	vmesslist, err := getSortedVmessList(urls, config.PingConfig, ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -69,8 +72,8 @@ func VmessConfigBalancer(urls []string, template *conf.Config, config *BalancerC
 	return template, nil
 }
 
-func VmessConfigSingleNode(urls []string, template *conf.Config, config *SingleNodeConfig, stopCh <-chan os.Signal) (*conf.Config, error) {
-	vmesslist, err := getSortedVmessList(urls, config.PingConfig, stopCh)
+func VmessConfigSingleNode(urls []string, template *conf.Config, config *SingleNodeConfig, ctx context.Context) (*conf.Config, error) {
+	vmesslist, err := getSortedVmessList(urls, config.PingConfig, ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -82,13 +85,13 @@ func VmessConfigSingleNode(urls []string, template *conf.Config, config *SingleN
 	return template, nil
 }
 
-func VmessConfig(urls []string, template *conf.Config, config interface{}, stopCh <-chan os.Signal) (*conf.Config, error) {
+func VmessConfig(urls []string, template *conf.Config, config interface{}, ctx context.Context) (*conf.Config, error) {
 	var c interface{} = config
 	switch inst := c.(type) {
 	case *BalancerConfig:
-		return VmessConfigBalancer(urls, template, inst, stopCh)
+		return VmessConfigBalancer(urls, template, inst, ctx)
 	case *SingleNodeConfig:
-		return VmessConfigSingleNode(urls, template, inst, stopCh)
+		return VmessConfigSingleNode(urls, template, inst, ctx)
 	default:
 		return nil, fmt.Errorf("INVALID CONFIG TYPE: %+v", inst)
 	}

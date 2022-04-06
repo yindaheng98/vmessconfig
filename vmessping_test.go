@@ -1,9 +1,9 @@
 package vmessconfig
 
 import (
+	"context"
 	"fmt"
 	"github.com/yindaheng98/vmessconfig/util"
-	"os"
 	"testing"
 )
 
@@ -12,7 +12,7 @@ func TestVmessPingAll(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	vmessstats := VmessPingAll(vmesslist, DefaultPingConfig(), make(chan os.Signal))
+	vmessstats := VmessPingAll(vmesslist, DefaultPingConfig(), context.Background())
 	vmesss := util.VmessSort(vmessstats)
 	for _, vmessstr := range vmesss {
 		fmt.Println(vmessstr)
