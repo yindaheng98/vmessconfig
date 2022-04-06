@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/v2fly/v2ray-core/v4/infra/conf"
 	"github.com/yindaheng98/vmessconfig"
 	"github.com/yindaheng98/vmessconfig/cmd/args"
 	"io/ioutil"
@@ -33,21 +32,9 @@ func main() {
 		exit(err)
 	}
 
-	template := &conf.Config{}
-	if config.TemplateConfig.From == "" {
-		err = json.Unmarshal([]byte(config.TemplateConfig.DefaultTemplate()), template)
-		if err != nil {
-			exit(err)
-		}
-	} else {
-		data, err := ioutil.ReadFile(config.TemplateConfig.From)
-		if err != nil {
-			exit(err)
-		}
-		err = json.Unmarshal(data, template)
-		if err != nil {
-			exit(err)
-		}
+	template, err := config.TemplateConfig.Template()
+	if err != nil {
+		exit(err)
 	}
 
 	ctx, _ := signal.NotifyContext(context.Background(), os.Interrupt, os.Kill, syscall.SIGTERM)

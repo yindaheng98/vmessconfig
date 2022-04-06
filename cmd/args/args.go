@@ -1,10 +1,13 @@
 package args
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"github.com/octago/sflags/gen/gflag"
+	"github.com/v2fly/v2ray-core/v4/infra/conf"
 	"github.com/yindaheng98/vmessconfig"
+	"io/ioutil"
 )
 
 type TemplateConfig struct {
@@ -15,6 +18,26 @@ type TemplateConfig struct {
 
 func (c TemplateConfig) DefaultTemplate() string {
 	return c.defaultTemp
+}
+
+func (c TemplateConfig) Template() (*conf.Config, error) {
+	template := &conf.Config{}
+	if c.From == "" {
+		err := json.Unmarshal([]byte(c.DefaultTemplate()), template)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		data, err := ioutil.ReadFile(c.From)
+		if err != nil {
+			return nil, err
+		}
+		err = json.Unmarshal(data, template)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return template, nil
 }
 
 type CmdConfig struct {
