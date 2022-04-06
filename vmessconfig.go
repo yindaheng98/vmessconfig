@@ -7,6 +7,8 @@ import (
 	"github.com/yindaheng98/vmessconfig/util"
 )
 
+type Config interface{}
+
 type BaseConfig struct {
 	PingConfig *PingConfig `json:"pingConfig"`
 }
@@ -85,7 +87,7 @@ func VmessConfigSingleNode(urls []string, template *conf.Config, config *SingleN
 	return template, nil
 }
 
-func VmessConfig(urls []string, template *conf.Config, config interface{}, ctx context.Context) (*conf.Config, error) {
+func VmessConfig(urls []string, template *conf.Config, config Config, ctx context.Context) (*conf.Config, error) {
 	var c interface{} = config
 	switch inst := c.(type) {
 	case *BalancerConfig:
