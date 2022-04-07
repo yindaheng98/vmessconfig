@@ -1,12 +1,11 @@
 package args
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
 	"github.com/octago/sflags/gen/gflag"
-	"github.com/v2fly/v2ray-core/v4/infra/conf"
 	"github.com/yindaheng98/vmessconfig"
+	"github.com/yindaheng98/vmessconfig/util"
 	"io/ioutil"
 )
 
@@ -20,38 +19,26 @@ func (c TemplateConfig) DefaultTemplate() string {
 	return c.defaultTemp
 }
 
-func (c TemplateConfig) Template() (*conf.Config, error) {
-	template := &conf.Config{}
-	if c.From == "" {
-		err := json.Unmarshal([]byte(c.DefaultTemplate()), template)
+func (c TemplateConfig) Template() (util.V2Config, error) {
+	template := []byte(c.DefaultTemplate())
+	if c.From != "" {
+		templateRead, err := ioutil.ReadFile(c.From)
 		if err != nil {
-			return nil, err
+			return template, err
 		}
-	} else {
-		data, err := ioutil.ReadFile(c.From)
-		if err != nil {
-			return nil, err
-		}
-		err = json.Unmarshal(data, template)
-		if err != nil {
-			return nil, err
-		}
+		return templateRead, nil
 	}
 	return template, nil
 }
 
-func (c TemplateConfig) Write(v2config *conf.Config) error {
-	j, err := json.MarshalIndent(v2config, "", " ")
-	if err != nil {
-		return err
-	}
+func (c TemplateConfig) Write(v2config util.V2Config) error {
 	if c.To != "" && c.To != "-" {
-		err := ioutil.WriteFile(c.To, j, 0777)
+		err := ioutil.WriteFile(c.To, v2config, 0777)
 		if err != nil {
 			return err
 		}
 	} else {
-		fmt.Println(string(j))
+		fmt.Println(string(v2config))
 	}
 	return nil
 }
