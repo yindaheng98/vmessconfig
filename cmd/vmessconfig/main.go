@@ -15,17 +15,17 @@ func exit(err error) {
 		fmt.Printf("%+v\n", err)
 	}
 	fmt.Printf("%s [balancer|single] -urls https://... -urls https://...\n", os.Args[0])
-	args.BalancerFlagSet.Usage()
-	args.SingleFlagSet.Usage()
+	args.PrintUsage()
 	os.Exit(1)
 }
 
 func main() {
-	err := args.GenerateCmdArgs()
+	config := args.NewCmdConfig()
+	err := config.GenerateCmdArgs()
 	if err != nil {
 		exit(err)
 	}
-	config, err := args.ParseCmdArgs(os.Args[1:])
+	err = config.ParseCmdArgs(os.Args[1:])
 	if err != nil {
 		exit(err)
 	}
