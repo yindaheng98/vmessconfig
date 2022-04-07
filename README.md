@@ -5,8 +5,8 @@
 
 1. 输入你的订阅地址
 2. vmessconfig获取订阅地址上的内容
-3. vmessping解析出`vmess://...`链接列表
-4. vmessping对这些`vmess://...`链接的质量进行测量
+3. [vmessping](https://github.com/v2fly/vmessping)解析出`vmess://...`链接列表
+4. [vmessping](https://github.com/v2fly/vmessping)对这些`vmess://...`链接的质量进行测量
 5. vmessconfig根据质量进行排序，选最好的作为outbound
 6. vmessconfig根据模板和选好的outbound生成配置文件
 
