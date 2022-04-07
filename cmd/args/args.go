@@ -97,6 +97,18 @@ func (config *CmdConfig) GenerateCmdArgs() error {
 	return nil
 }
 
+func AddCmdArgs(cfg interface{}) error {
+	errb := gflag.ParseTo(cfg, BalancerFlagSet)
+	if errb != nil {
+		return errb
+	}
+	errc := gflag.ParseTo(cfg, SingleFlagSet)
+	if errc != nil {
+		return errc
+	}
+	return nil
+}
+
 func PrintUsage() {
 	BalancerFlagSet.Usage()
 	SingleFlagSet.Usage()
