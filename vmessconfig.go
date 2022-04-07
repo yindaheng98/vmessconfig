@@ -59,7 +59,7 @@ func getSortedVmessList(urls []string, config *PingConfig, ctx context.Context) 
 	return vmesslists, nil
 }
 
-func VmessConfigBalancer(urls []string, template util.V2Config, config *BalancerConfig, ctx context.Context) (util.V2Config, error) {
+func VmessConfigBalancer(urls []string, template V2Config, config *BalancerConfig, ctx context.Context) (V2Config, error) {
 	vmesslist, err := getSortedVmessList(urls, config.PingConfig, ctx)
 	if err != nil {
 		return nil, err
@@ -69,11 +69,11 @@ func VmessConfigBalancer(urls []string, template util.V2Config, config *Balancer
 		max = len(vmesslist)
 	}
 	outboundDetourConfigs := util.VmessListParse(vmesslist[0:max], config.PingConfig.UseMux, config.PingConfig.AllowInsecure)
-	template = util.VmessBalancerConfigMerge(outboundDetourConfigs, template, config.TagFormat, config.OutboundInsertBeforeTag, config.BalancerInsertToTag)
+	template = VmessBalancerConfigMerge(outboundDetourConfigs, template, config.TagFormat, config.OutboundInsertBeforeTag, config.BalancerInsertToTag)
 	return template, nil
 }
 
-func VmessConfigSingleNode(urls []string, template util.V2Config, config *SingleNodeConfig, ctx context.Context) (util.V2Config, error) {
+func VmessConfigSingleNode(urls []string, template V2Config, config *SingleNodeConfig, ctx context.Context) (V2Config, error) {
 	vmesslist, err := getSortedVmessList(urls, config.PingConfig, ctx)
 	if err != nil {
 		return nil, err
@@ -82,11 +82,11 @@ func VmessConfigSingleNode(urls []string, template util.V2Config, config *Single
 	if err != nil {
 		return nil, err
 	}
-	template = util.VmessSingleNodeConfigMerge(outboundDetourConfig, template, config.OutboundInsertBeforeTag)
+	template = VmessSingleNodeConfigMerge(outboundDetourConfig, template, config.OutboundInsertBeforeTag)
 	return template, nil
 }
 
-func VmessConfig(urls []string, template util.V2Config, config Config, ctx context.Context) (util.V2Config, error) {
+func VmessConfig(urls []string, template V2Config, config Config, ctx context.Context) (V2Config, error) {
 	var c interface{} = config
 	switch inst := c.(type) {
 	case *BalancerConfig:

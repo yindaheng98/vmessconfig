@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/octago/sflags/gen/gflag"
 	"github.com/yindaheng98/vmessconfig"
-	"github.com/yindaheng98/vmessconfig/util"
 	"io/ioutil"
 )
 
@@ -19,7 +18,7 @@ func (c TemplateConfig) DefaultTemplate() string {
 	return c.defaultTemp
 }
 
-func (c TemplateConfig) Template() (util.V2Config, error) {
+func (c TemplateConfig) Template() (vmessconfig.V2Config, error) {
 	template := []byte(c.DefaultTemplate())
 	if c.From != "" {
 		templateRead, err := ioutil.ReadFile(c.From)
@@ -31,7 +30,7 @@ func (c TemplateConfig) Template() (util.V2Config, error) {
 	return template, nil
 }
 
-func (c TemplateConfig) Write(v2config util.V2Config) error {
+func (c TemplateConfig) Write(v2config vmessconfig.V2Config) error {
 	if c.To != "" && c.To != "-" {
 		err := ioutil.WriteFile(c.To, v2config, 0777)
 		if err != nil {

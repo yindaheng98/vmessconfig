@@ -1,4 +1,4 @@
-package util
+package vmessconfig
 
 import (
 	"encoding/json"
