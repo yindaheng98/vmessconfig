@@ -3,7 +3,6 @@ package vmessconfig
 import (
 	"context"
 	"fmt"
-	"github.com/v2fly/v2ray-core/v4/infra/conf"
 	"github.com/yindaheng98/vmessconfig/util"
 )
 
@@ -60,7 +59,7 @@ func getSortedVmessList(urls []string, config *PingConfig, ctx context.Context) 
 	return vmesslists, nil
 }
 
-func VmessConfigBalancer(urls []string, template *conf.Config, config *BalancerConfig, ctx context.Context) (*conf.Config, error) {
+func VmessConfigBalancer(urls []string, template util.V2Config, config *BalancerConfig, ctx context.Context) (util.V2Config, error) {
 	vmesslist, err := getSortedVmessList(urls, config.PingConfig, ctx)
 	if err != nil {
 		return nil, err
@@ -74,7 +73,7 @@ func VmessConfigBalancer(urls []string, template *conf.Config, config *BalancerC
 	return template, nil
 }
 
-func VmessConfigSingleNode(urls []string, template *conf.Config, config *SingleNodeConfig, ctx context.Context) (*conf.Config, error) {
+func VmessConfigSingleNode(urls []string, template util.V2Config, config *SingleNodeConfig, ctx context.Context) (util.V2Config, error) {
 	vmesslist, err := getSortedVmessList(urls, config.PingConfig, ctx)
 	if err != nil {
 		return nil, err
@@ -87,7 +86,7 @@ func VmessConfigSingleNode(urls []string, template *conf.Config, config *SingleN
 	return template, nil
 }
 
-func VmessConfig(urls []string, template *conf.Config, config Config, ctx context.Context) (*conf.Config, error) {
+func VmessConfig(urls []string, template util.V2Config, config Config, ctx context.Context) (util.V2Config, error) {
 	var c interface{} = config
 	switch inst := c.(type) {
 	case *BalancerConfig:
