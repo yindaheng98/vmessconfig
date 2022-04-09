@@ -2,7 +2,6 @@ package vmessconfig
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/v2fly/v2ray-core/v4/infra/conf"
 )
 
@@ -143,19 +142,23 @@ func insertBalancerTags(tags []string, templateRaw V2Config, insertToTag string)
 // balancerInsertToTag: 在模板中的哪个balancer中插入outbounds tag列表，找不到位置就不插
 func VmessBalancerConfigMerge(
 	outboundDetourConfigs []*conf.OutboundDetourConfig, template V2Config,
-	tagFormat, outboundInsertBeforeTag, balancerInsertToTag string,
+	outboundInsertBeforeTag, balancerInsertToTag string,
 ) V2Config {
-	tags := make([]string, len(outboundDetourConfigs))
+	tagSet := make(map[string]bool)
 	var outboundConfigs []json.RawMessage
-	for i, outbound := range outboundDetourConfigs {
-		tag := fmt.Sprintf(tagFormat, i)
-		outbound.Tag = tag
-		tags[i] = tag
+	for _, outbound := range outboundDetourConfigs {
+		tagSet[outbound.Tag] = true
 		outboundRaw, err := json.MarshalIndent(*outbound, "", " ")
 		if err != nil {
 			continue
 		}
 		outboundConfigs = append(outboundConfigs, outboundRaw)
+	}
+	tags := make([]string, len(tagSet))
+	i := 0
+	for tag := range tagSet {
+		tags[i] = tag
+		i++
 	}
 	template = insertOutboundConfig(outboundConfigs, template, outboundInsertBeforeTag)
 	template = insertBalancerTags(tags, template, balancerInsertToTag)
