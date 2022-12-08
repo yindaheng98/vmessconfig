@@ -8,7 +8,7 @@ import (
 )
 
 func TestVmessPingAll(t *testing.T) {
-	vmesslist, err := util.GetVmessList("https://get.cloudv2.net/osubscribe.php?sid=128958&token=MDByRw64Cnex")
+	vmesslist, err := getVmessList("https://get.cloudv2.net/osubscribe.php?sid=128958&token=MDByRw64Cnex")
 	if err != nil {
 		t.Error(err)
 	}

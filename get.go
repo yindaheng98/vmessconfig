@@ -1,7 +1,8 @@
-package util
+package vmessconfig
 
 import (
 	"bytes"
+	"github.com/yindaheng98/vmessconfig/util"
 	"io/ioutil"
 	"net/http"
 	"os/exec"
@@ -24,8 +25,8 @@ func splitVmess(s string) []string {
 	})
 }
 
-// defalutGetVmessList 默认的GetVmessList
-func defalutGetVmessList(url string) ([]string, error) {
+// DefalutGetVmessList 默认的GetVmessList
+func DefalutGetVmessList(url string) ([]string, error) {
 	resp, err := http.Get(url) //请求base64Vmess
 	if err != nil {
 		return []string{}, err
@@ -34,15 +35,15 @@ func defalutGetVmessList(url string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	strVmess, err := Base64VmessListDecode(string(base64Vmess)) //解码base64Vmess为strVmess
+	strVmess, err := util.Base64VmessListDecode(string(base64Vmess)) //解码base64Vmess为strVmess
 	if err != nil {
 		return nil, err
 	}
 	return splitVmess(strVmess), nil //分割strVmess
 }
 
-// GetVmessList 从某个URL中读取Vmess列表，可自定义
-var GetVmessList = defalutGetVmessList
+// getVmessList 从某个URL中读取Vmess列表，可自定义
+var getVmessList = DefalutGetVmessList
 
 // WgetGetVmessList 通过wget读取Vmess列表的GetVmessList
 // http.Get 没法直接读取 octet-stream 遂出此下策
@@ -55,9 +56,13 @@ func WgetGetVmessList(url string) ([]string, error) {
 	if err != nil {
 		return []string{}, err
 	}
-	strVmess, err := Base64VmessListDecode(stdout.String()) //解码base64Vmess为strVmess
+	strVmess, err := util.Base64VmessListDecode(stdout.String()) //解码base64Vmess为strVmess
 	if err != nil {
 		return nil, err
 	}
 	return splitVmess(strVmess), nil //分割strVmess
+}
+
+func CustomizeGetVmessList(f func(url string) ([]string, error)) {
+	getVmessList = f
 }

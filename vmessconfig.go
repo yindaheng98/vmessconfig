@@ -56,7 +56,7 @@ func DefaultBalancerConfig() *BalancerConfig {
 func getSortedVmessList(urls []string, config *PingConfig, ctx context.Context) ([]string, error) {
 	vmesslists := make([]string, 0)
 	for _, url := range urls {
-		vmesslist, err := util.GetVmessList(url)
+		vmesslist, err := getVmessList(url)
 		if err != nil {
 			continue
 		}
