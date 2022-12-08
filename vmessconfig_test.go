@@ -3,12 +3,28 @@ package vmessconfig
 import (
 	"context"
 	"fmt"
+	"github.com/yindaheng98/vmessconfig/util"
 	"testing"
 )
 
 func TestVmessConfigBalancer(t *testing.T) {
 	template := []byte(DefaultBalancerTemplate)
 	bconf := DefaultBalancerConfig()
+	vconf, err := VmessConfigBalancer([]string{
+		"https://get.cloudv2.net/osubscribe.php?sid=128958&token=MDByRw64Cnex",
+		"https://get.cloudv2.net/osubscribe.php?sid=128958&token=MDByRw64Cnex",
+	}, template, bconf, context.Background())
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	fmt.Println(string(vconf))
+}
+
+func TestVmessWgetConfigBalancer(t *testing.T) {
+	template := []byte(DefaultBalancerTemplate)
+	bconf := DefaultBalancerConfig()
+	util.GetVmessList = util.WgetGetVmessList
 	vconf, err := VmessConfigBalancer([]string{
 		"https://get.cloudv2.net/osubscribe.php?sid=128958&token=MDByRw64Cnex",
 		"https://get.cloudv2.net/osubscribe.php?sid=128958&token=MDByRw64Cnex",
